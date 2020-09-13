@@ -1,24 +1,39 @@
 window.addEventListener('DOMContentLoaded', () => {
   "use strict";
 
-
-
   const heroes = document.querySelector('.heroes');
   const options = document.querySelector('.options');
   const movieOptions = document.getElementById('movies');
-  console.log(movieOptions);
 
-
-
-  const heandler = (data, name, val) => {
-
-    heroes.textContent = '';
-    movieOptions.textContent = '';
+  const heandler = (data, val) => {
     const movieMap = new Set();
-    const objHeroes = data.filter((item) => {
-      if (item[name] === val) {
-        return true;
+    data.forEach((item) => {
+      let {
+        movies
+      } = item;
+
+      if (typeof movies === 'object') {
+        movies.forEach((i) => {
+          movieMap.add(i);
+        });
       }
+    });
+    heroes.textContent = '';
+
+    movieMap.forEach((item) => {
+      if (item === val) {
+        movieOptions.insertAdjacentHTML('beforeEnd', `<option value="${item}" selected>${item}</option>`);
+        // console.log(item);
+      } else {
+        movieOptions.insertAdjacentHTML('beforeEnd', `<option value="${item}">${item}</option>`);
+      }
+    });
+
+
+
+
+    const objHeroes = data.filter((item) => {
+
       if (typeof item.movies === 'object') {
         if (item.movies.join().match(val)) {
           return true;
@@ -57,15 +72,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
         });
       }
-      // console.log(name, species, gender, birthDay, deathDay, photo, movies, status, actors);
-      if (!birthDay) {
-        birthDay = 'не дано';
-      }
-      if (!deathDay) {
-        deathDay = 'не дано';
-      }
-
-
       const hero = `
       <div class="hero">
           <div class="card-heading">
@@ -87,56 +93,41 @@ window.addEventListener('DOMContentLoaded', () => {
                   </div>
              </div>
       </div>
-
-
-
       </div>
             `;
       // вставляем карточку в верстку
       heroes.insertAdjacentHTML("beforeend", hero);
-
-
-
-
     });
-    movieMap.forEach((item) => {
-      movieOptions.insertAdjacentHTML('beforeEnd', `<option value="${item}">${item}</option>`);
-    });
+
+
 
   };
 
-  const postData = (name, val) => {
+  const postData = (val) => {
     const request = new XMLHttpRequest();
-
     request.addEventListener('readystatechange', () => {
       if (request.readyState !== 4) {
         return;
       }
       if (request.status === 200) {
-
-        heandler(JSON.parse(request.response), name, val);
+        heandler(JSON.parse(request.response), val);
       }
     });
-
     request.open('GET', '/../dbHeroes.json');
     //request.setRequestHeader('Content-Type', 'multipart/form-data');
     request.setRequestHeader('Content-Type', 'application/json');
-
-
     request.send();
     //request.send(formData);
   };
 
   options.addEventListener('change', (event) => {
     const target = event.target;
-    const name = target.name;
     const val = target.value;
-    console.log(target.value);
-    postData(name, val);
+    // console.log(val);
+    movieOptions.textContent = '';
+    postData(val);
   });
 
-
-
-
+  postData();
 
 });
