@@ -33,24 +33,18 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
     const objHeroes = data.filter((item) => {
-
+      if (val === '') {
+        return;
+      }
       if (typeof item.movies === 'object') {
         if (item.movies.join().match(val)) {
           return true;
         }
       }
     });
-    // console.log(objHeroes[0].movies);
-
 
     objHeroes.forEach((item) => {
-      if (item.movies) {
-        item.movies.forEach((i) => {
 
-          // console.log(i);
-
-        });
-      }
       let {
         name,
         species,
@@ -66,12 +60,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
       } = item;
 
-      if (typeof movies === 'object') {
-        movies.forEach((item) => {
-          movieMap.add(item);
-
-        });
-      }
       const hero = `
       <div class="hero">
           <div class="card-heading">
