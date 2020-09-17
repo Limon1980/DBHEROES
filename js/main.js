@@ -1,66 +1,66 @@
 window.addEventListener('DOMContentLoaded', () => {
-  "use strict";
+	"use strict";
 
-  const heroes = document.querySelector('.heroes');
-  const options = document.querySelector('.options');
-  const movieOptions = document.getElementById('movies');
+	const heroes = document.querySelector('.heroes');
+	const options = document.querySelector('.options');
+	const movieOptions = document.getElementById('movies');
 
-  const heandler = (data, val) => {
-    const movieMap = new Set();
-    data.forEach((item) => {
-      let {
-        movies
-      } = item;
+	const heandler = (data, val) => {
+		const movieMap = new Set();
+		data.forEach((item) => {
+			let {
+				movies
+			} = item;
 
-      if (typeof movies === 'object') {
-        movies.forEach((i) => {
-          movieMap.add(i);
-        });
-      }
-    });
-    heroes.textContent = '';
+			if (typeof movies === 'object') {
+				movies.forEach((i) => {
+					movieMap.add(i);
+				});
+			}
+		});
+		heroes.textContent = '';
 
-    movieMap.forEach((item) => {
-      if (item === val) {
-        movieOptions.insertAdjacentHTML('beforeEnd', `<option value="${item}" selected>${item}</option>`);
-        // console.log(item);
-      } else {
-        movieOptions.insertAdjacentHTML('beforeEnd', `<option value="${item}">${item}</option>`);
-      }
-    });
-
-
+		movieMap.forEach((item) => {
+			if (item === val) {
+				movieOptions.insertAdjacentHTML('beforeEnd', `<option value="${item}" selected>${item}</option>`);
+				// console.log(item);
+			} else {
+				movieOptions.insertAdjacentHTML('beforeEnd', `<option value="${item}">${item}</option>`);
+			}
+		});
 
 
-    const objHeroes = data.filter((item) => {
-      if (val === '') {
-        return;
-      }
-      if (typeof item.movies === 'object') {
-        if (item.movies.join().match(val)) {
-          return true;
-        }
-      }
-    });
-
-    objHeroes.forEach((item) => {
-
-      let {
-        name,
-        species,
-        gender,
-        birthDay,
-        deathDay,
-        photo,
-        movies,
-        status,
-        actors,
-        citizenship
 
 
-      } = item;
+		const objHeroes = data.filter((item) => {
+			if (val === '') {
+				return;
+			}
+			if (typeof item.movies === 'object') {
+				if (item.movies.join().match(val)) {
+					return true;
+				}
+			}
+		});
 
-      const hero = `
+		objHeroes.forEach((item) => {
+
+			let {
+				name,
+				species,
+				gender,
+				birthDay,
+				deathDay,
+				photo,
+				movies,
+				status,
+				actors,
+				citizenship
+
+
+			} = item;
+
+			const hero = `
       <div class="hero">
           <div class="card-heading">
           <h3 class="card-title">${name} - ${citizenship}</h3>
@@ -83,39 +83,39 @@ window.addEventListener('DOMContentLoaded', () => {
       </div>
       </div>
             `;
-      // вставляем карточку в верстку
-      heroes.insertAdjacentHTML("beforeend", hero);
-    });
+			// вставляем карточку в верстку
+			heroes.insertAdjacentHTML("beforeend", hero);
+		});
 
 
 
-  };
+	};
 
-  const postData = (val) => {
-    const request = new XMLHttpRequest();
-    request.addEventListener('readystatechange', () => {
-      if (request.readyState !== 4) {
-        return;
-      }
-      if (request.status === 200) {
-        heandler(JSON.parse(request.response), val);
-      }
-    });
-    request.open('GET', '/../dbHeroes.json');
-    //request.setRequestHeader('Content-Type', 'multipart/form-data');
-    request.setRequestHeader('Content-Type', 'application/json');
-    request.send();
-    //request.send(formData);
-  };
+	const postData = (val) => {
+		const request = new XMLHttpRequest();
+		request.addEventListener('readystatechange', () => {
+			if (request.readyState !== 4) {
+				return;
+			}
+			if (request.status === 200) {
+				heandler(JSON.parse(request.response), val);
+			}
+		});
+		request.open('GET', 'dbHeroes.json');
+		//request.setRequestHeader('Content-Type', 'multipart/form-data');
+		request.setRequestHeader('Content-Type', 'application/json');
+		request.send();
+		//request.send(formData);
+	};
 
-  options.addEventListener('change', (event) => {
-    const target = event.target;
-    const val = target.value;
-    // console.log(val);
-    movieOptions.textContent = '';
-    postData(val);
-  });
+	options.addEventListener('change', (event) => {
+		const target = event.target;
+		const val = target.value;
+		// console.log(val);
+		movieOptions.textContent = '';
+		postData(val);
+	});
 
-  postData();
+	postData();
 
 });
